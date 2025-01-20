@@ -18,17 +18,43 @@
       min-height: 100vh;
     }
 
+    #missionsCompleted {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
     header {
-      background-color: #4CAF50;
+      background: linear-gradient(90deg, #4CAF50, #45a049);
       color: white;
       padding: 20px;
       text-align: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
     }
 
     header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 32px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      height: 5px;
+      background: linear-gradient(90deg, #4CAF50, #45a049);
+      border-radius: 10px;
     }
 
     .container {
@@ -85,6 +111,23 @@
     .info-icon:hover {
       color: #2e7d32;
     }
+    
+    .reset-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: block; /* Tornar o botão visível */
+}
+
+.reset-button:hover {
+  color: #2e7d32;
+}
 
     footer {
       text-align: center;
@@ -97,12 +140,19 @@
     }
 
     .level-container {
-      margin-top: 20px;
-      font-size: 18px;
-      font-weight: bold;
       display: flex;
-      justify-content: center;
+      gap: 20px;
+      font-size: 18px;
       align-items: center;
+    }
+
+    .level-container p {
+      margin: 0;
+      padding: 8px 16px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 25px;
+      font-weight: bold;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     }
 
     .level {
@@ -176,14 +226,62 @@
       font-size: 16px;
       margin-bottom: 20px;
     }
+
+    .start-modal {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+    }
+
+    .start-modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .start-modal-content h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+
+    .start-modal-content p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .start-modal button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .start-modal button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>Missões Diárias</h1>
-    <div class="level-container">
-      <p id="userLevel" class="level">Nível: 1</p>
-      <p id="missionsCompleted" style="font-size: 18px; color: white;">Missões Concluídas: 0</p>
+    <div class="header-content">
+      <h1>Prontos para Servir</h1>
+      <div class="level-container">
+        <p id="userLevel" class="level">Nível: 1</p>
+        <p id="missionsCompleted">Missões Concluídas: 0</p>
+      </div>
     </div>
   </header>
 
@@ -193,7 +291,7 @@
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- Modal de Detalhes -->
   <div id="detailsModal" class="modal">
     <div class="modal-content">
       <h2>Detalhes da Missão</h2>
@@ -202,102 +300,82 @@
     </div>
   </div>
 
-  <script>
-    const defaultMissions = [
-      { 
-        id: 1, 
-        description: "Compartilhe nosso post no Instagram", 
-        reward: "10 pontos", 
-        details: "Vá até nosso Instagram e compartilhe o último post no seu story.", 
-        completed: false 
-      },
-      { 
-        id: 2, 
-        description: "Convide um amigo para participar", 
-        reward: "20 pontos", 
-        details: "Convide um amigo para se registrar no app e completar missões.", 
-        completed: false 
-      },
-    ];
+    <!-- <button id="resetButton" class="reset-button" onclick="resetApp()">Reiniciar</button> -->
 
-    const MISSIONS_KEY = "userMissions";
+  <script>
+    const ACCEPTED_TERMS_KEY = "acceptedTerms";
+    const MISSIONS_KEY = "missions";
     const USER_LEVEL_KEY = "userLevel";
 
+    window.onload = function() {
+      const userLevel = loadUserData();
+      document.getElementById("userLevel").textContent = `Nível: ${userLevel.level}`;
+      renderMissions();
+    };
+
+    // Função para carregar as missões do localStorage ou usar as missões padrão
     function loadMissions() {
       const storedMissions = localStorage.getItem(MISSIONS_KEY);
       const missions = storedMissions ? JSON.parse(storedMissions) : defaultMissions;
 
-      if (missions.length < defaultMissions.length) {
-        const newMissions = defaultMissions.filter(mission => 
-          !missions.some(storedMission => storedMission.id === mission.id)
-        );
-        return [...missions, ...newMissions];
-      }
-
       return missions;
     }
 
+    // Função para carregar os dados do usuário (nível)
     function loadUserData() {
       const level = parseInt(localStorage.getItem(USER_LEVEL_KEY)) || 1;
       return { level };
     }
 
+    // Função para salvar os dados do usuário (nível)
     function saveUserData(level) {
       localStorage.setItem(USER_LEVEL_KEY, level);
+      document.getElementById("userLevel").textContent = `Nível: ${level}`;
     }
 
+    // Função para salvar as missões no localStorage
     function saveMissions(missions) {
       localStorage.setItem(MISSIONS_KEY, JSON.stringify(missions));
     }
 
-    const { level } = loadUserData();
-    const missions = loadMissions();
-    const missionsContainer = document.getElementById("missions");
-
+    // Função para renderizar as missões
     function renderMissions() {
-      missionsContainer.innerHTML = "";
+      const missionsContainer = document.getElementById("missions");
+      const missions = loadMissions();
 
-      const sortedMissions = [...missions].sort((a, b) => {
-        if (a.completed === b.completed) {
-          return b.id - a.id;
-        }
-        return a.completed - b.completed;
-      });
+      missionsContainer.innerHTML = ""; // Limpa o conteúdo atual
 
-      sortedMissions.forEach(mission => {
+      missions.forEach(mission => {
         const missionElement = document.createElement("div");
-        missionElement.className = `mission ${mission.completed ? "completed" : ""}`;
+        missionElement.classList.add("mission");
+        if (mission.completed) {
+          missionElement.classList.add("completed");
+        }
+
         missionElement.innerHTML = `
-          <span>${mission.description} - <strong>${mission.reward}</strong></span>
-          <div style="display: inline-flex; align-items: center;">
-            <span class="info-icon" onclick="showDetails(${mission.id})">ℹ️</span>
-            <button ${mission.completed ? "disabled" : ""} onclick="completeMission(${mission.id})">
-              ${mission.completed ? "Concluída" : "Concluir"}
-            </button>
+          <div>
+            <strong>${mission.name}</strong>
+            <p>${mission.description}</p>
           </div>
+          <span class="info-icon" onclick="showMissionDetails(${mission.id})">ℹ️</span>
+          <button ${mission.completed ? "disabled" : ""} onclick="completeMission(${mission.id})">
+            ${mission.completed ? "Concluída" : "Concluir"}
+          </button>
         `;
+
         missionsContainer.appendChild(missionElement);
       });
     }
 
-    function updateLevelDisplay(newLevel) {
-      const levelDisplay = document.getElementById("userLevel");
-      levelDisplay.textContent = `Nível: ${newLevel}`;
-    }
-
-    function updateMissionsCompleted() {
-      const completedMissions = missions.filter(m => m.completed).length;
-      const missionsCompletedDisplay = document.getElementById("missionsCompleted");
-      missionsCompletedDisplay.textContent = `Missões Concluídas: ${completedMissions}`;
-    }
-
+    // Função para concluir uma missão
     function completeMission(id) {
+      const missions = loadMissions(); // Carrega as missões
       const mission = missions.find(m => m.id === id);
       if (mission) {
         mission.completed = true;
-        saveMissions(missions);
+        saveMissions(missions); // Salva as missões atualizadas
 
-        let newLevel = level;
+        let newLevel = loadUserData().level;
         const completedMissions = missions.filter(m => m.completed).length;
 
         if (completedMissions === 1) {
@@ -327,46 +405,221 @@
         } else if (completedMissions === 24) {
           newLevel = 10;
           alert(`Parabéns! Você chegou ao Nível 10!`);
+        
         }
 
-        saveUserData(newLevel);
-        renderMissions();
-        updateLevelDisplay(newLevel);
-        updateMissionsCompleted();
+        saveUserData(newLevel); // Atualiza o nível
+        renderMissions(); // Re-renderiza as missões
+        updateLevelDisplay(newLevel); // Atualiza a exibição do nível
+        updateMissionsCompleted(); // Atualiza o número de missões concluídas
       }
     }
 
-    function showDetails(id) {
-      const mission = missions.find(m => m.id === id);
+    // Função para exibir os detalhes de uma missão
+    function showMissionDetails(missionId) {
+      const missions = loadMissions();
+      const mission = missions.find(m => m.id === missionId);
+
       if (mission) {
-        const modal = document.getElementById("detailsModal");
-        const missionDetails = document.getElementById("missionDetails");
-        missionDetails.textContent = mission.details;
-        modal.style.display = "flex";
+        document.getElementById("missionDetails").textContent = mission.details;
+        document.getElementById("detailsModal").style.display = "flex";
       }
     }
 
+    // Função para fechar o modal de detalhes
     function closeModal() {
-      const modal = document.getElementById("detailsModal");
-      modal.style.display = "none";
+      document.getElementById("detailsModal").style.display = "none";
     }
 
-    function resetData() {
-      if (confirm("Tem certeza de que deseja reiniciar as missões?")) {
-        localStorage.removeItem(MISSIONS_KEY);
-        localStorage.removeItem(USER_LEVEL_KEY);
-        location.reload();
-      }
+    // Função para atualizar a exibição do nível
+    function updateLevelDisplay(level) {
+      document.getElementById("userLevel").textContent = `Nível: ${level}`;
     }
 
-    // Inicializar a exibição
-    renderMissions();
-    updateLevelDisplay(level);
-    updateMissionsCompleted();
-    
-    
+    // Função para atualizar o número de missões concluídas
+    function updateMissionsCompleted() {
+      const completedMissions = loadMissions().filter(m => m.completed).length;
+      document.getElementById("missionsCompleted").textContent = `Missões Concluídas: ${completedMissions}`;
+    }
 
-    
+    // Função para reiniciar o app
+    function resetApp() {
+      localStorage.clear(); // Limpa todos os dados do localStorage
+      alert("O aplicativo foi reiniciado.");
+      window.location.reload(); // Recarrega a página para reiniciar o estado
+    }
+
+    // Missões padrão
+    const defaultMissions = [
+      { 
+        "id": 1, 
+        "name": "Recepcionar os visitantes com entusiasmo", 
+        "description": "Cumprimente os visitantes com um sorriso e um 'bom dia' animado.", 
+        "details": "Receber bem os visitantes é crucial para uma boa primeira impressão e para integrá-los na programação.", 
+        "completed": false 
+      },
+      { 
+    "id": 2, 
+    "name": "Orientar sobre a programação do dia", 
+    "description": "Explique a programação da semana e como os visitantes podem participar das atividades.", 
+    "details": "A clareza na comunicação sobre as atividades do dia garante que todos se sintam à vontade para participar.", 
+    "completed": false 
+  },
+  { 
+    "id": 3, 
+    "name": "Aplaudir durante os louvores", 
+    "description": "Aplauda de forma calorosa e empolgante durante os momentos de louvor.", 
+    "details": "Aplaudir com entusiasmo ajuda a criar um ambiente de celebração e encoraja todos a participarem.", 
+    "completed": false 
+  },
+  { 
+    "id": 4, 
+    "name": "Realizar entrevistas de vídeo com os irmãos", 
+    "description": "Entrevistar os membros da igreja para saber como estão participando da semana evangelística.", 
+    "details": "As entrevistas de vídeo ajudam a compartilhar testemunhos e a inspirar outros participantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 5, 
+    "name": "Integrar os visitantes nas atividades", 
+    "description": "Chame os visitantes para participar das atividades e se envolver com a comunidade.", 
+    "details": "A integração dos visitantes é fundamental para que eles se sintam parte da comunidade e se envolvam nas ações.", 
+    "completed": false 
+  },
+  { 
+    "id": 6, 
+    "name": "Cumprimentar os visitantes com energia", 
+    "description": "Ao encontrar os visitantes, cumprimente-os de forma calorosa e enérgica.", 
+    "details": "Cumprimentos energéticos criam um ambiente acolhedor e estimulam os visitantes a se sentirem bem-vindos.", 
+    "completed": false 
+  },
+  { 
+    "id": 7, 
+    "name": "Ajudar a organizar os espaços de convivência", 
+    "description": "Colabore na organização dos espaços onde os visitantes podem interagir e participar das atividades.", 
+    "details": "Um espaço bem organizado contribui para a boa interação entre os participantes e visitantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 8, 
+    "name": "Ajudar a distribuir os lanches", 
+    "description": "Auxilie na distribuição de lanches quando oferecidos aos participantes.", 
+    "details": "Distribuir lanches de forma organizada garante que todos recebam e aproveitem a pausa para o lanche.", 
+    "completed": false 
+  },
+  { 
+    "id": 9, 
+    "name": "Ajudar a guardar os materiais ao final do dia", 
+    "description": "Auxilie na guarda de cadeiras, mesas e outros materiais ao final de cada dia da missão evangelística.", 
+    "details": "A organização no final do dia garante que tudo esteja pronto para o próximo evento e mantém o espaço limpo e seguro.", 
+    "completed": false 
+  },
+  { 
+    "id": 10, 
+    "name": "Ajudar a guardar os materiais ao final da missão", 
+    "description": "Organize e guarde os materiais, cadeiras e mesas após a missão evangelística.", 
+    "details": "Guardar tudo corretamente ao final da missão evita extravios e facilita a organização para o futuro.", 
+    "completed": false 
+  },
+  { 
+    "id": 11, 
+    "name": "Auxiliar na montagem do local", 
+    "description": "Seja pontual e ajude a montar o local, colocando cadeiras, mesas e outros materiais necessários.", 
+    "details": "A montagem eficiente do local garante que as atividades comecem no horário e que os participantes se sintam bem acomodados.", 
+    "completed": false 
+  },
+  { 
+    "id": 12, 
+    "name": "Ajudar na organização do almoço/jantar para os participantes", 
+    "description": "Auxilie na organização e distribuição das refeições para os participantes das atividades.", 
+    "details": "Uma refeição bem organizada contribui para a convivência e o bem-estar dos participantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 13, 
+    "name": "Buscar um companheiro para orar durante o culto", 
+    "description": "Convide alguém para orar junto com você durante o culto, orando pela obra evangelística e pelos visitantes.", 
+    "details": "A oração em grupo fortalece o espírito de união e ajuda a focar nas intenções espirituais da missão.", 
+    "completed": false 
+  },
+  { 
+    "id": 14, 
+    "name": "Fazer perguntas aos visitantes sobre suas expectativas", 
+    "description": "Pergunte aos visitantes sobre suas expectativas para a semana evangelística.", 
+    "details": "Entender as expectativas dos visitantes ajuda a adaptar as atividades e oferecer uma experiência mais personalizada.", 
+    "completed": false 
+  },
+  { 
+    "id": 15, 
+    "name": "Interagir com os visitantes após os cultos", 
+    "description": "Após os cultos, converse com os visitantes para saber como foi a experiência e como podemos melhorar.", 
+    "details": "A interação pós-culto é uma oportunidade de feedback e de fortalecer os laços com os visitantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 16, 
+    "name": "Ajudar na organização de atividades recreativas para as crianças", 
+    "description": "Organize atividades recreativas e educativas para as crianças durante a semana evangelística.", 
+    "details": "As atividades para crianças ajudam a mantê-las engajadas e permitem que os pais participem das atividades principais.", 
+    "completed": false 
+  },
+  { 
+    "id": 17, 
+    "name": "Ajudar a organizar os brindes", 
+    "description": "Organize os brindes na mesa ou no local designado para distribuição.", 
+    "details": "A organização dos brindes é importante para que todos os participantes recebam de forma ordenada e eficiente.", 
+    "completed": false 
+  },
+  { 
+    "id": 18, 
+    "name": "Trocar ideias sobre a missão com outros participantes", 
+    "description": "Converse com outros participantes sobre a missão evangelística e compartilhe ideias para melhorar a experiência.", 
+    "details": "Trocar ideias ajuda a fortalecer o trabalho em equipe e melhora a execução das atividades durante a missão.", 
+    "completed": false 
+  },
+  { 
+    "id": 19, 
+    "name": "Ajudar a preparar os materiais para a próxima atividade", 
+    "description": "Prepare os materiais necessários para a próxima atividade, como folhetos, cartazes ou outros recursos.", 
+    "details": "A preparação antecipada ajuda a garantir que as atividades aconteçam sem imprevistos e de forma organizada.", 
+    "completed": false 
+  },
+  { 
+    "id": 20, 
+    "name": "Fazer uma oração em grupo com os visitantes", 
+    "description": "Lidere uma oração em grupo, convidando os visitantes a participarem e se unirem em oração.", 
+    "details": "A oração em grupo fortalece os laços espirituais e cria um ambiente de união entre os participantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 21, 
+    "name": "Ajudar a organizar a distribuição de materiais de oração", 
+    "description": "Organize e distribua materiais de oração para os visitantes, incentivando a participação na oração comunitária.", 
+    "details": "Materiais de oração ajudam os visitantes a se engajarem espiritualmente e a fortalecerem sua fé durante a semana.", 
+    "completed": false 
+  },
+  { 
+    "id": 22, 
+    "name": "Ajudar na organização de atividades externas", 
+    "description": "Auxilie na organização e execução de atividades de evangelismo fora da barraca, como visitas a bairros próximos.", 
+    "details": "O evangelismo externo amplia o alcance da mensagem e envolve a comunidade local, tornando a semana mais impactante.", 
+    "completed": false 
+  },
+  { 
+    "id": 23, 
+    "name": "Fazer uma reflexão sobre a missão evangelística", 
+    "description": "Participe de uma reflexão em grupo sobre os resultados e aprendizados da missão evangelística.", 
+    "details": "A reflexão ajuda a avaliar o impacto da missão e a identificar áreas para melhorias nas futuras atividades.", 
+    "completed": false 
+  },
+  { 
+    "id": 24, 
+    "name": "Auxiliar na limpeza e organização do local após a missão", 
+    "description": "Ajude na limpeza e organização do local ao final da missão, garantindo que tudo esteja em ordem.", 
+    "details": "Manter o local limpo e organizado é fundamental para a imagem da missão e para a boa convivência entre os participantes.", 
+    "completed": false 
+  }
+    ];
   </script>
 </body>
 </html>
