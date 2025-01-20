@@ -2,7 +2,7 @@
   "name": "Missões e Recompensas",
   "short_name": "Missões",
   "description": "Acompanhe suas missões e recompensas",
-  "start_url": "https://meucode-git.github.io/Entrevista/",
+ "start_url": "/projeto/"
   "display": "standalone",
   "background_color": "#f4f4f9",
   "theme_color": "#4CAF50",
