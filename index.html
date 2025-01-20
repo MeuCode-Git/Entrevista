@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then((registration) => {
+          console.log('Service Worker registrado com sucesso:', registration);
+        })
+        .catch((error) => {
+          console.log('Falha ao registrar o Service Worker:', error);
+        });
+    });
+  }
+</script>
+  <link rel="manifest" href="manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Missões e Recompensas</title>
@@ -9,12 +23,11 @@
       font-family: 'Arial', sans-serif;
       margin: 0;
       padding: 0;
-      background-color: #f4f4f9;
+      background-color: #f0f4f8;
       color: #333;
       display: flex;
       flex-direction: column;
-      height: 100vh;
-      justify-content: space-between;
+      min-height: 100vh;
     }
 
     header {
@@ -22,32 +35,31 @@
       color: white;
       padding: 20px;
       text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
     }
 
     .container {
+      flex: 1;
       padding: 20px;
-      flex-grow: 1;
-      overflow-y: auto;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     .mission {
       background: #fff;
-      margin-bottom: 15px;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .mission:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease;
     }
 
     .mission.completed {
@@ -55,36 +67,35 @@
       color: #155724;
     }
 
-    button {
+    .mission button {
       background-color: #4CAF50;
       color: white;
       border: none;
       padding: 10px 15px;
       border-radius: 5px;
       cursor: pointer;
-      margin-left: 10px;
-      transition: background-color 0.3s ease;
+      transition: background 0.3s ease;
     }
 
-    button:hover {
-      background-color: #45a049;
-    }
-
-    button:disabled {
+    .mission button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
+    }
+
+    .mission button:hover:not(:disabled) {
+      background-color: #45a049;
     }
 
     .info-icon {
       cursor: pointer;
       font-size: 20px;
       color: #4CAF50;
-      margin-right: 8px;
+      margin-right: 12px;
       transition: color 0.3s ease;
     }
 
     .info-icon:hover {
-      color: #45a049;
+      color: #2e7d32;
     }
 
     footer {
@@ -93,9 +104,29 @@
       background: #4CAF50;
       color: white;
       position: relative;
+      width: 100%;
+      margin-top: 30px;
     }
 
-    /* Modal Styles */
+    .level-container {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .level {
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 25px;
+      display: inline-block;
+      margin-right: 15px;
+      font-size: 20px;
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -103,44 +134,69 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.6);
       justify-content: center;
       align-items: center;
     }
 
     .modal-content {
       background: white;
-      padding: 20px;
-      border-radius: 8px;
+      padding: 30px;
+      border-radius: 10px;
       text-align: center;
       width: 80%;
-      max-width: 400px;
-      animation: fadeIn 0.3s ease;
+      max-width: 500px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
     }
 
     .close {
       background: #f44336;
       color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      transition: background 0.3s ease;
     }
 
     .close:hover {
-      background-color: #e53935;
+      background: #d32f2f;
     }
 
-    @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+    .reset-button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+    }
+
+    .reset-button:hover {
+      background-color: #d32f2f;
+    }
+
+    .modal-content p {
+      font-size: 16px;
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
   <header>
     <h1>Missões Diárias</h1>
+    <div class="level-container">
+      <p id="userLevel" class="level">Nível: 1</p>
+      <p id="missionsCompleted" style="font-size: 18px; color: white;">Missões Concluídas: 0</p>
+    </div>
   </header>
 
   <div class="container">
@@ -148,10 +204,6 @@
       <!-- Missões serão carregadas aqui -->
     </div>
   </div>
-
-  <footer>
-    <p>Complete missões para ganhar recompensas!</p>
-  </footer>
 
   <!-- Modal -->
   <div id="detailsModal" class="modal">
@@ -168,7 +220,7 @@
         id: 1, 
         description: "Compartilhe nosso post no Instagram", 
         reward: "10 pontos", 
-        details: "Vá até nosso Instagram e compartilhe o último post no seu story. <img src='caminho/para/sua/imagem.jpg' alt='Imagem da Missão' style='width: 100%; max-width: 300px; margin-top: 15px;'>", 
+        details: "Vá até nosso Instagram e compartilhe o último post no seu story.", 
         completed: false 
       },
       { 
@@ -178,32 +230,53 @@
         details: "Convide um amigo para se registrar no app e completar missões.", 
         completed: false 
       },
-      { 
-        id: 3, 
-        description: "Leia o capítulo 1 do livro X", 
-        reward: "15 pontos", 
-        details: "Leia o primeiro capítulo do livro X e marque como concluído.", 
-        completed: false 
-      },
     ];
 
     const MISSIONS_KEY = "userMissions";
+    const USER_LEVEL_KEY = "userLevel";
 
     function loadMissions() {
       const storedMissions = localStorage.getItem(MISSIONS_KEY);
-      return storedMissions ? JSON.parse(storedMissions) : defaultMissions;
+      const missions = storedMissions ? JSON.parse(storedMissions) : defaultMissions;
+
+      if (missions.length < defaultMissions.length) {
+        const newMissions = defaultMissions.filter(mission => 
+          !missions.some(storedMission => storedMission.id === mission.id)
+        );
+        return [...missions, ...newMissions];
+      }
+
+      return missions;
+    }
+
+    function loadUserData() {
+      const level = parseInt(localStorage.getItem(USER_LEVEL_KEY)) || 1;
+      return { level };
+    }
+
+    function saveUserData(level) {
+      localStorage.setItem(USER_LEVEL_KEY, level);
     }
 
     function saveMissions(missions) {
       localStorage.setItem(MISSIONS_KEY, JSON.stringify(missions));
     }
 
+    const { level } = loadUserData();
     const missions = loadMissions();
     const missionsContainer = document.getElementById("missions");
 
     function renderMissions() {
       missionsContainer.innerHTML = "";
-      missions.forEach(mission => {
+
+      const sortedMissions = [...missions].sort((a, b) => {
+        if (a.completed === b.completed) {
+          return b.id - a.id;
+        }
+        return a.completed - b.completed;
+      });
+
+      sortedMissions.forEach(mission => {
         const missionElement = document.createElement("div");
         missionElement.className = `mission ${mission.completed ? "completed" : ""}`;
         missionElement.innerHTML = `
@@ -219,32 +292,93 @@
       });
     }
 
+    function updateLevelDisplay(newLevel) {
+      const levelDisplay = document.getElementById("userLevel");
+      levelDisplay.textContent = `Nível: ${newLevel}`;
+    }
+
+    function updateMissionsCompleted() {
+      const completedMissions = missions.filter(m => m.completed).length;
+      const missionsCompletedDisplay = document.getElementById("missionsCompleted");
+      missionsCompletedDisplay.textContent = `Missões Concluídas: ${completedMissions}`;
+    }
+
     function completeMission(id) {
       const mission = missions.find(m => m.id === id);
       if (mission) {
         mission.completed = true;
         saveMissions(missions);
+
+        let newLevel = level;
+        const completedMissions = missions.filter(m => m.completed).length;
+
+        if (completedMissions === 1) {
+          newLevel = 2;
+          alert(`Parabéns! Você passou para o Nível 2!`);
+        } else if (completedMissions === 3) {
+          newLevel = 3;
+          alert(`Parabéns! Você chegou ao Nível 3!`);
+        } else if (completedMissions === 6) {
+          newLevel = 4;
+          alert(`Parabéns! Você chegou ao Nível 4!`);
+        } else if (completedMissions === 9) {
+          newLevel = 5;
+          alert(`Parabéns! Você chegou ao Nível 5!`);
+        } else if (completedMissions === 12) {
+          newLevel = 6;
+          alert(`Parabéns! Você chegou ao Nível 6!`);
+        } else if (completedMissions === 15) {
+          newLevel = 7;
+          alert(`Parabéns! Você chegou ao Nível 7!`);
+        } else if (completedMissions === 18) {
+          newLevel = 8;
+          alert(`Parabéns! Você chegou ao Nível 8!`);
+        } else if (completedMissions === 21) {
+          newLevel = 9;
+          alert(`Parabéns! Você chegou ao Nível 9!`);
+        } else if (completedMissions === 24) {
+          newLevel = 10;
+          alert(`Parabéns! Você chegou ao Nível 10!`);
+        }
+
+        saveUserData(newLevel);
         renderMissions();
-        alert(`Parabéns! Você ganhou ${mission.reward}`);
+        updateLevelDisplay(newLevel);
+        updateMissionsCompleted();
       }
     }
 
     function showDetails(id) {
       const mission = missions.find(m => m.id === id);
       if (mission) {
-        const imageUrl = "caminho/para/sua/imagem.jpg"; // Substitua pelo caminho da sua imagem
-        const imageHtml = `<img src="${imageUrl}" alt="" style="width: 100%; max-width: 300px; margin-bottom: 15px;">`;
-
-        document.getElementById("missionDetails").innerHTML = imageHtml + mission.details;
-        document.getElementById("detailsModal").style.display = "flex";
+        const modal = document.getElementById("detailsModal");
+        const missionDetails = document.getElementById("missionDetails");
+        missionDetails.textContent = mission.details;
+        modal.style.display = "flex";
       }
     }
 
     function closeModal() {
-      document.getElementById("detailsModal").style.display = "none";
+      const modal = document.getElementById("detailsModal");
+      modal.style.display = "none";
     }
 
+    function resetData() {
+      if (confirm("Tem certeza de que deseja reiniciar as missões?")) {
+        localStorage.removeItem(MISSIONS_KEY);
+        localStorage.removeItem(USER_LEVEL_KEY);
+        location.reload();
+      }
+    }
+
+    // Inicializar a exibição
     renderMissions();
+    updateLevelDisplay(level);
+    updateMissionsCompleted();
+    
+    
+
+    
   </script>
 </body>
 </html>
