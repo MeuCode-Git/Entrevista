@@ -3,12 +3,17 @@
   "short_name": "Missão",
   "start_url": "https://meucode-git.github.io/Entrevista/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "background_color": "#4CAF50",  // Cor de fundo da tela inicial
   "theme_color": "#ffffff",
   "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ]
