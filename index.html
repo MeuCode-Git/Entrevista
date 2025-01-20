@@ -1,20 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('service-worker.js')
-        .then((registration) => {
-          console.log('Service Worker registrado com sucesso:', registration);
-        })
-        .catch((error) => {
-          console.log('Falha ao registrar o Service Worker:', error);
-        });
-    });
-  }
-</script>
-  <link rel="manifest" href="manifest.json">
+  <script src="/service-worker.js"></script>
+<link rel="manifest" href="/manifest.json">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Missões e Recompensas</title>
