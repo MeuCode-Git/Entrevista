@@ -451,12 +451,11 @@
 
     // Missões padrão
     const defaultMissions = [
-     { 
+            { 
     "id": 1, 
     "name": "Teste", 
     "description": "Toque no icone ℹ️ de imformação e logo no botão Concluir.", 
-    "details": "o icone de info ℹ️ posui informação extra e detalhes importantes da missão. Este app irá ajudar vc a quebrar o gelo e a timidez, descobrir formas de servir a Jesus. o prazo para atingir o nível máximo tem um tempo limite para ser completa até o dia Domingo, o nível mais alto o nível número 10
-ao finalizar o período de tempo será encerradas as missões e postaremos um print do nosso nível atingido no mural do app que ainda não temos visto e ficará aí pra ser superado por nós mesmos também visíveis pelos usuários deste app até a próxima missão", 
+    "details": "o icone de info ℹ️ posui informação extra e detalhes.", 
     "completed": false 
   },
       { 
@@ -488,6 +487,139 @@ ao finalizar o período de tempo será encerradas as missões e postaremos um pr
     "details": "A integração dos visitantes é fundamental para que eles se sintam parte da comunidade e se envolvam nas ações.", 
     "completed": false 
   },
+/*  { 
+    "id": 6, 
+    "name": "Cumprimentar os visitantes com energia", 
+    "description": "Ao encontrar os visitantes, cumprimente-os de forma calorosa e enérgica.", 
+    "details": "Cumprimentos energéticos criam um ambiente acolhedor e estimulam os visitantes a se sentirem bem-vindos.", 
+    "completed": false 
+  },
+  { 
+    "id": 7, 
+    "name": "Ajudar a organizar os espaços de convivência", 
+    "description": "Colabore na organização dos espaços onde os visitantes podem interagir e participar das atividades.", 
+    "details": "Um espaço bem organizado contribui para a boa interação entre os participantes e visitantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 8, 
+    "name": "Ajudar a distribuir os lanches", 
+    "description": "Auxilie na distribuição de lanches quando oferecidos aos participantes.", 
+    "details": "Distribuir lanches de forma organizada garante que todos recebam e aproveitem a pausa para o lanche.", 
+    "completed": false 
+  },
+  { 
+    "id": 9, 
+    "name": "Ajudar a guardar os materiais ao final do dia", 
+    "description": "Auxilie na guarda de cadeiras, mesas e outros materiais ao final de cada dia da missão evangelística.", 
+    "details": "A organização no final do dia garante que tudo esteja pronto para o próximo evento e mantém o espaço limpo e seguro.", 
+    "completed": false 
+  },
+  { 
+    "id": 10, 
+    "name": "Ajudar a guardar os materiais ao final da missão", 
+    "description": "Organize e guarde os materiais, cadeiras e mesas após a missão evangelística.", 
+    "details": "Guardar tudo corretamente ao final da missão evita extravios e facilita a organização para o futuro.", 
+    "completed": false 
+  },
+  { 
+    "id": 11, 
+    "name": "Auxiliar na montagem do local", 
+    "description": "Seja pontual e ajude a montar o local, colocando cadeiras, mesas e outros materiais necessários.", 
+    "details": "A montagem eficiente do local garante que as atividades comecem no horário e que os participantes se sintam bem acomodados.", 
+    "completed": false 
+  },
+  { 
+    "id": 12, 
+    "name": "Ajudar na organização do almoço/jantar para os participantes", 
+    "description": "Auxilie na organização e distribuição das refeições para os participantes das atividades.", 
+    "details": "Uma refeição bem organizada contribui para a convivência e o bem-estar dos participantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 13, 
+    "name": "Buscar um companheiro para orar durante o culto", 
+    "description": "Convide alguém para orar junto com você durante o culto, orando pela obra evangelística e pelos visitantes.", 
+    "details": "A oração em grupo fortalece o espírito de união e ajuda a focar nas intenções espirituais da missão.", 
+    "completed": false 
+  },
+  { 
+    "id": 14, 
+    "name": "Fazer perguntas aos visitantes sobre suas expectativas", 
+    "description": "Pergunte aos visitantes sobre suas expectativas para a semana evangelística.", 
+    "details": "Entender as expectativas dos visitantes ajuda a adaptar as atividades e oferecer uma experiência mais personalizada.", 
+    "completed": false 
+  },
+  { 
+    "id": 15, 
+    "name": "Interagir com os visitantes após os cultos", 
+    "description": "Após os cultos, converse com os visitantes para saber como foi a experiência e como podemos melhorar.", 
+    "details": "A interação pós-culto é uma oportunidade de feedback e de fortalecer os laços com os visitantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 16, 
+    "name": "Ajudar na organização de atividades recreativas para as crianças", 
+    "description": "Organize atividades recreativas e educativas para as crianças durante a semana evangelística.", 
+    "details": "As atividades para crianças ajudam a mantê-las engajadas e permitem que os pais participem das atividades principais.", 
+    "completed": false 
+  },
+  { 
+    "id": 17, 
+    "name": "Ajudar a organizar os brindes", 
+    "description": "Organize os brindes na mesa ou no local designado para distribuição.", 
+    "details": "A organização dos brindes é importante para que todos os participantes recebam de forma ordenada e eficiente.", 
+    "completed": false 
+  },
+  { 
+    "id": 18, 
+    "name": "Trocar ideias sobre a missão com outros participantes", 
+    "description": "Converse com outros participantes sobre a missão evangelística e compartilhe ideias para melhorar a experiência.", 
+    "details": "Trocar ideias ajuda a fortalecer o trabalho em equipe e melhora a execução das atividades durante a missão.", 
+    "completed": false 
+  },
+  { 
+    "id": 19, 
+    "name": "Ajudar a preparar os materiais para a próxima atividade", 
+    "description": "Prepare os materiais necessários para a próxima atividade, como folhetos, cartazes ou outros recursos.", 
+    "details": "A preparação antecipada ajuda a garantir que as atividades aconteçam sem imprevistos e de forma organizada.", 
+    "completed": false 
+  },
+  { 
+    "id": 20, 
+    "name": "Fazer uma oração em grupo com os visitantes", 
+    "description": "Lidere uma oração em grupo, convidando os visitantes a participarem e se unirem em oração.", 
+    "details": "A oração em grupo fortalece os laços espirituais e cria um ambiente de união entre os participantes.", 
+    "completed": false 
+  },
+  { 
+    "id": 21, 
+    "name": "Ajudar a organizar a distribuição de materiais de oração", 
+    "description": "Organize e distribua materiais de oração para os visitantes, incentivando a participação na oração comunitária.", 
+    "details": "Materiais de oração ajudam os visitantes a se engajarem espiritualmente e a fortalecerem sua fé durante a semana.", 
+    "completed": false 
+  },
+  { 
+    "id": 22, 
+    "name": "Ajudar na organização de atividades externas", 
+    "description": "Auxilie na organização e execução de atividades de evangelismo fora da barraca, como visitas a bairros próximos.", 
+    "details": "O evangelismo externo amplia o alcance da mensagem e envolve a comunidade local, tornando a semana mais impactante.", 
+    "completed": false 
+  },
+  { 
+    "id": 23, 
+    "name": "Fazer uma reflexão sobre a missão evangelística", 
+    "description": "Participe de uma reflexão em grupo sobre os resultados e aprendizados da missão evangelística.", 
+    "details": "A reflexão ajuda a avaliar o impacto da missão e a identificar áreas para melhorias nas futuras atividades.", 
+    "completed": false 
+  },
+  { 
+    "id": 24, 
+    "name": "Auxiliar na limpeza e organização do local após a missão", 
+    "description": "Ajude na limpeza e organização do local ao final da missão, garantindo que tudo esteja em ordem.", 
+    "details": "Manter o local limpo e organizado é fundamental para a imagem da missão e para a boa convivência entre os participantes.", 
+    "completed": false 
+  }*/
     ];
   </script>
 </body>
