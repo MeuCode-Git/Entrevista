@@ -316,7 +316,7 @@
     // Função para carregar as missões do localStorage ou usar as missões padrão
     function loadMissions() {
       const storedMissions = localStorage.getItem(MISSIONS_KEY);
-      const missions = storedMissions ? JSON.parse(storedMissions) : defaultMissions;
+const missions = storedMissions ? JSON.parse(storedMissions) : defaultMissions;
 
       return missions;
     }
